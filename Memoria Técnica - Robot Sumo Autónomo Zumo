@@ -1,0 +1,192 @@
+Memoria Técnica - Robot Sumo Autónomo Zumo
+📋 Descripción del Proyecto
+Robot sumo autónomo basado en plataforma Zumo, diseñado para competir en la categoría mini-sumo. El robot utiliza sensores de distancia infrarrojos para detectar oponentes y sensores de línea QTR para mantenerse dentro del dohyo (área de competencia).
+
+🚀 Características Principales
+Detección omnidireccional: 4 sensores Sharp GP2Y0A21YK0F
+
+Control de bordes: 4 sensores de línea QTR
+
+Estrategia de ataque: Comportamientos diferenciados por dirección
+
+Sistema de seguridad: Retardo de 5 segundos post-inicio
+
+Búsqueda inteligente: Patrones aleatorios para localizar oponentes
+
+🛠 Hardware Utilizado
+Componentes Principales
+Plataforma: Zumo 32U4 Robot
+
+Microcontrolador: ATmega32U4
+
+Motores: 2x motores DC con encoders
+
+Sensores de distancia: 4x Sharp GP2Y0A21YK0F (10-80cm)
+
+Sensores de línea: 4x QTR Reflectance Sensors
+
+Alimentación: Batería LiPo 3.7V
+
+Esquema de Conexiones
+text
+SENSORES SHARP:
+- Frontal    → A0
+- Izquierdo  → A1  
+- Derecho    → A2
+- Trasero    → A3
+
+SENSORES LÍNEA:
+- QTR 1 → Pin 5
+- QTR 2 → Pin 6
+- QTR 3 → Pin 7
+- QTR 4 → Pin 8
+
+INTERRUPTORES:
+- START (Frontal)  → Pin 2
+- TRASERO Enable  → Pin 3
+- Reservado       → Pin 4
+⚙️ Configuración de Parámetros
+Distancias de Detección
+cpp
+#define OBSTACLE_DISTANCE 30      // Detección frontal/lateral (cm)
+#define REAR_OBSTACLE_DISTANCE 20 // Detección trasera (cm)
+#define LINE_THRESHOLD 500        // Umbral línea blanca/negra
+Velocidades de Motor
+cpp
+#define MAX_SPEED 400             // Ataque frontal
+#define REVERSE_SPEED -400        // Retroceso
+#define TURN_SPEED 350            // Giro
+#define ALIGN_SPEED 200           // Alineación fina
+#define SEARCH_SPEED 200          // Búsqueda
+🧠 Algoritmo de Control
+Diagrama de Estados
+text
+INICIO → ESPERA 5s → BÚSQUEDA → [DETECCIÓN] → ATAQUE
+                             ↓
+                         EVASIÓN BORDE
+Comportamientos Implementados
+Ataque Frontal (attackFront())
+
+Alineación fina basada en sensores laterales
+
+Avance a máxima velocidad
+
+Ataque Lateral (attackLeft(), attackRight())
+
+Giro de 90° hacia el oponente
+
+Avance inmediato
+
+Giro 180° (turnAround())
+
+Activado por sensor trasero (opcional)
+
+Giro completo cuando se detecta oponente por detrás
+
+Búsqueda (searchOpponent())
+
+4 patrones aleatorios cada 1.5 segundos
+
+Incluye: avance, giros y curvas
+
+Evasión de Bordes (evadeEdge())
+
+Retroceso y giro aleatorio al detectar línea
+
+Previene salida del dohyo
+
+📁 Estructura del Código
+Archivos Principales
+text
+sumo_robot_zumo/
+├── sumo_robot_zumo.ino      # Código principal
+├── README.md               # Esta documentación
+├── diagrama_conexiones.png # Esquema de conexiones
+└── librerias.txt          # Dependencias requeridas
+Funciones Principales
+setup(): Inicialización y calibración
+
+loop(): Lógica principal de control
+
+startRobot(): Secuencia de inicio
+
+Funciones de comportamiento: attackFront(), evadeEdge(), etc.
+
+Funciones auxiliares: readSharpSensor(), checkLineDetection()
+
+🔧 Instalación y Configuración
+Requisitos
+Arduino IDE 1.8.x o superior
+
+Librerías:
+
+ZumoMotors
+
+QTRSensors
+
+Pasos de Instalación
+Clonar repositorio
+
+Abrir sumo_robot_zumo.ino en Arduino IDE
+
+Instalar librerías requeridas
+
+Conectar plataforma Zumo vía USB
+
+Seleccionar placa "Arduino Leonardo"
+
+Cargar programa
+
+Calibración
+Los sensores de línea se calibran automáticamente al inicio
+
+Ajustar LINE_THRESHOLD según condiciones de iluminación
+
+Verificar distancias de sensores Sharp con mediciones reales
+
+🎮 Modo de Uso
+Preparación:
+
+Colocar robot en centro del dohyo
+
+Activar interruptor de alimentación
+
+Inicio:
+
+Presionar botón frontal (SWITCH_FRONT)
+
+Esperar 5 segundos (cuenta regresiva)
+
+Operación:
+
+Robot funciona autónomamente
+
+Interruptor lateral controla sensor trasero
+
+Robot se detiene automáticamente al salir del dohyo
+
+⚠️ Solución de Problemas
+Comportamientos Inesperados
+Robot no se mueve: Verificar batería y conexiones de motores
+
+Detección errónea: Calibrar sensores de línea y verificar distancias
+
+Giros imprecisos: Ajustar TURN_SPEED y delays de giro
+
+Ajustes Finos
+Modificar OBSTACLE_DISTANCE según tamaño del dohyo
+
+Ajustar velocidades para diferentes superficies
+
+Optimizar umbral de línea para contraste específico
+
+📊 Mejoras Futuras
+Implementar PID para seguimiento de oponentes
+
+Añuir modo de configuración vía Bluetooth
+
+Implementar estrategias de emboscada
+
+Añuir medición de batería
+
+Optimizar consumo energético
